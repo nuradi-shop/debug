@@ -1,111 +1,96 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { appConfig } from "@/data/config"
+import { useCallback, useEffect, useRef } from "react"
 
-const LEFT_AT_KEY = "brock_store_left_at"
-const FRESH_LOGIN_COOKIE = "brock_login_fresh"
-
-function hasFreshLoginCookie() {
-  return document.cookie
-    .split("; ")
-    .some((item) => item === `${FRESH_LOGIN_COOKIE}=1`)
-}
-
-function clearFreshLoginCookie() {
-  document.cookie = `${FRESH_LOGIN_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax`
-}
+const HEARTBEAT_INTERVAL = 20_000
 
 export function AwaySessionGuard({ enabled }: { enabled: boolean }) {
-  const expiring = useRef(false)
+  const checking = useRef(false)
+  const expired = useRef(false)
+
+  const goToExpiredLogin = useCallback(() => {
+    if (expired.current) return
+
+    expired.current = true
+    window.location.replace("/login?reason=session_expired")
+  }, [])
+
+  const sendHeartbeat = useCallback(async () => {
+    if (!enabled) return
+    if (checking.current) return
+    if (expired.current) return
+
+    // Kalau tab BROCK STORE sedang tidak terlihat,
+    // jangan update waktu session.
+    if (document.visibilityState !== "visible") return
+
+    checking.current = true
+
+    try {
+      const response = await fetch("/api/auth/heartbeat", {
+        method: "POST",
+        cache: "no-store",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (response.status === 401 || response.status === 440) {
+        goToExpiredLogin()
+        return
+      }
+
+      if (!response.ok) {
+        console.warn("Heartbeat session gagal:", response.status)
+      }
+    } catch (error) {
+      // Kalau internet putus sebentar, jangan langsung logout.
+      // Server akan mengecek expiry lagi saat heartbeat berikutnya.
+      console.warn("Heartbeat session error:", error)
+    } finally {
+      checking.current = false
+    }
+  }, [enabled, goToExpiredLogin])
 
   useEffect(() => {
-    if (!enabled) {
-      localStorage.removeItem(LEFT_AT_KEY)
-      return
-    }
+    if (!enabled) return
 
-    if (hasFreshLoginCookie()) {
-      localStorage.removeItem(LEFT_AT_KEY)
-      clearFreshLoginCookie()
-    }
+    // Begitu halaman dibuka / user kembali ke BROCK STORE,
+    // server langsung cek apakah session sudah lewat 5 menit.
+    void sendHeartbeat()
 
-    const awayLimitMs = appConfig.auth.awaySessionMinutes * 60 * 1000
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        void sendHeartbeat()
+      }
+    }, HEARTBEAT_INTERVAL)
 
-    const expireSession = async () => {
-      if (expiring.current) return
-      expiring.current = true
-
-      try {
-        await fetch("/api/auth/expire-session", {
-          method: "POST",
-          cache: "no-store",
-          keepalive: true,
-        })
-      } catch {
-        // Tetap arahkan ke login. Request berikutnya akan mengecek session lagi.
+    const handleVisibilityChange = () => {
+      // Saat kembali ke BROCK STORE, langsung cek session.
+      if (document.visibilityState === "visible") {
+        void sendHeartbeat()
       }
 
-      localStorage.removeItem(LEFT_AT_KEY)
-      window.location.replace("/login?reason=session_expired")
+      // Saat hidden tidak melakukan apa-apa.
+      // Heartbeat otomatis berhenti karena tab tidak visible.
     }
 
-    const checkReturn = () => {
-      const raw = localStorage.getItem(LEFT_AT_KEY)
-      if (!raw) return
-
-      const leftAt = Number(raw)
-      if (!Number.isFinite(leftAt)) {
-        localStorage.removeItem(LEFT_AT_KEY)
-        return
-      }
-
-      const awayFor = Date.now() - leftAt
-      if (awayFor >= awayLimitMs) {
-        void expireSession()
-        return
-      }
-
-      // Balik sebelum 5 menit: sesi tetap aktif dan hitungan dibatalkan.
-      localStorage.removeItem(LEFT_AT_KEY)
-    }
-
-    const markAway = () => {
-      if (document.visibilityState === "hidden") {
-        localStorage.setItem(LEFT_AT_KEY, String(Date.now()))
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        void sendHeartbeat()
       }
     }
 
-    const handleVisibility = () => {
-      if (document.visibilityState === "hidden") {
-        markAway()
-      } else {
-        checkReturn()
-      }
-    }
-
-    const handlePageHide = () => {
-      localStorage.setItem(LEFT_AT_KEY, String(Date.now()))
-    }
-
-    const handleStorage = (event: StorageEvent) => {
-      // Kalau tab BROCK lain masih terlihat, jangan anggap user benar-benar meninggalkan BROCK STORE.
-      if (event.key === LEFT_AT_KEY && document.visibilityState === "visible") {
-        localStorage.removeItem(LEFT_AT_KEY)
-      }
-    }
-
-    checkReturn()
-    document.addEventListener("visibilitychange", handleVisibility)
-    window.addEventListener("pagehide", handlePageHide)
-    window.addEventListener("storage", handleStorage)
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    window.addEventListener("focus", handleFocus)
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibility)
-      window.removeEventListener("pagehide", handlePageHide)
-      window.removeEventListener("storage", handleStorage)
+      window.clearInterval(interval)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      window.removeEventListener("focus", handleFocus)
     }
-  }, [enabled])
+  }, [enabled, sendHeartbeat])
 
   return null
 }
