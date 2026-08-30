@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Link from "next/link"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
@@ -51,14 +50,13 @@ export default async function Home() {
             href="/"
             className="click-motion flex items-center gap-3"
           >
-            <div className="relative h-11 w-11 overflow-hidden rounded-2xl border border-cyan-300/20 bg-white/[.04] shadow-[0_0_24px_rgba(34,211,238,.08)]">
-              <Image
+            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-2xl border border-cyan-300/20 bg-white/[.04] shadow-[0_0_24px_rgba(34,211,238,.08)]">
+              <img
                 src={appConfig.brand.logo}
                 alt="Logo BROCK STORE"
-                fill
-                sizes="44px"
-                className="object-cover"
-                priority
+                width={44}
+                height={44}
+                className="block h-11 w-11 object-cover"
               />
             </div>
 
