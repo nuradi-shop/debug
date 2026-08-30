@@ -2,7 +2,9 @@ import type React from "react"
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Poppins } from "next/font/google"
+
 import "./globals.css"
+
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { AwaySessionGuard } from "@/components/away-session-guard"
@@ -29,17 +31,31 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const jar = await cookies()
-  const user = await getUserBySession(jar.get(SESSION_COOKIE)?.value)
+
+  const sessionToken = jar.get(SESSION_COOKIE)?.value
+
+  const user = await getUserBySession(sessionToken)
 
   return (
     <html lang="id" suppressHydrationWarning className="dark">
       <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
       </head>
+
       <body className={poppins.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <AwaySessionGuard enabled={Boolean(user)} />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AwaySessionGuard enabled={Boolean(sessionToken)} />
+
           {children}
+
           <Toaster />
         </ThemeProvider>
       </body>
