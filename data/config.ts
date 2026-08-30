@@ -1,6 +1,11 @@
 export const pterodactylConfig = {
-  domain: (process.env.PANEL_DOMAIN || "https://panelprivatemngyaanzpanel7631.buyervps.my.id").replace(/\/$/, ""),
+  domain: (
+    process.env.PANEL_DOMAIN ||
+    "https://panelprivatemngyaanzpanel7631.buyervps.my.id"
+  ).replace(/\/$/, ""),
+
   apiKey: process.env.PANEL_APIKEY,
+
   nests: "5",
   nestsGame: "2",
   egg: "15",
@@ -9,11 +14,14 @@ export const pterodactylConfig = {
 }
 
 export const appConfig = {
-  whatsappGroupLink: "https://whatsapp.com/channel/0029Valq3pQHVvThh0GDrh1w",
+  whatsappGroupLink:
+    "https://whatsapp.com/channel/0029Valq3pQHVvThh0GDrh1w",
+
   nameHost: "BROCK STORE",
 
   brand: {
-    // Ganti file ini kapan saja kalau mau pakai logo baru.
+    // Semua logo BROCK STORE ambil dari file ini.
+    // Jadi cukup ganti /public/brock.png kalau mau ganti logo.
     logo: "/brock.png",
   },
 
@@ -34,18 +42,31 @@ export const appConfig = {
     host: "smtp.gmail.com",
     port: 587,
     secure: false,
+
     auth: {
       user: "brockstore71@gmail.com",
       pass: process.env.GMAIL_PASSWORD,
     },
+
     from: "TIM BROCK STORE <brockstore71@gmail.com>",
   },
 
   auth: {
+    // Kode verifikasi pendaftaran.
     verificationCodeMinutes: 5,
+
+    // Link reset password.
     resetPasswordMinutes: 5,
+
+    // Jeda tombol kirim ulang kode.
     resendVerificationCooldownSeconds: 60,
-    // Session hanya dihitung saat user meninggalkan tab/website BROCK STORE.
+
+    // Website mengirim tanda "masih aktif"
+    // setiap 20 detik selama BROCK STORE terlihat.
+    heartbeatSeconds: 20,
+
+    // Kalau heartbeat berhenti selama 5 menit,
+    // session dianggap sudah berakhir.
     awaySessionMinutes: 5,
   },
 
@@ -54,18 +75,22 @@ export const appConfig = {
       subject: "DATA PANEL BOT ANDA",
       title: "PEMBAYARAN PANEL BOT BERHASIL",
     },
+
     adminPanel: {
       subject: "DATA AKUN ADMIN PANEL ANDA",
       title: "PEMBAYARAN ADMIN PANEL BERHASIL",
     },
+
     redfinger: {
       subject: "KODE REDFINGER ANDA",
       title: "PEMBAYARAN REDFINGER BERHASIL",
     },
+
     verification: {
       subject: "KODE VERIFIKASI PENDAFTARAN",
       title: "VERIFIKASI EMAIL BROCK STORE",
     },
+
     resetPassword: {
       subject: "RESET PASSWORD BROCK STORE",
       title: "PERMINTAAN RESET PASSWORD",
