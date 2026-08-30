@@ -33,7 +33,6 @@ export default async function Home() {
   const user = await getUserBySession(sessionToken)
 
   if (user) redirect("/store")
-  if (sessionToken && !user) redirect("/login?reason=session_expired")
 
   return (
     <main className="min-h-screen bg-[#050914] text-white">
