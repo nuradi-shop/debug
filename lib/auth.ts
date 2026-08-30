@@ -109,7 +109,7 @@ export async function createReset(email: string) {
   await resets.insertOne({
     email: user.email,
     tokenHash,
-    expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
   })
 
   return token
