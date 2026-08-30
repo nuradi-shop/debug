@@ -1,0 +1,22 @@
+PERBAIKAN KONFIGURASI
+
+1. Domain Pterodactyl sekarang dibaca dari PANEL_DOMAIN di .env.
+2. Fallback domain panel: https://panelnyariostoree.pteroq.biz.id
+3. PANEL_APIKEY dibersihkan dari spasi/newline sebelum dipakai.
+4. Jika domain/key Pterodactyl kosong atau request gagal, UI tetap menampilkan:
+   Failed to retrieve user list from Pterodactyl panel
+5. Jika Sakurupiah belum lengkap, UI menampilkan:
+   Konfigurasi Sakurupiah belum lengkap
+6. MongoDB diperbaiki menjadi MONGODB_URL=...
+7. APP_URL ditambahkan untuk callback/return QRIS.
+8. Error status Pterodactyl (401/403/404/5xx) dicatat di server log tanpa mencetak API key.
+
+CATATAN: Application API key Pterodactyl harus punya izin Read untuk Users dan izin lain yang dibutuhkan untuk create user/server.
+
+UPDATE PAYMENT MERGE - TOKO 2
+9. Flow create payment dipastikan mengikuti pola Toko 2: POST langsung dari server action ke https://sakurupiah.id/api/create.php, Authorization Bearer, x-www-form-urlencoded, QRIS2, dan HMAC SHA256.
+10. Flow cek status tetap menggunakan https://sakurupiah.id/api/status-transaction.php seperti Toko 2, tetapi proteksi atomic processing Toko 1 dipertahankan agar panel tidak terbuat dua kali saat callback dan polling berjalan bersamaan.
+11. Callback/return URL memakai APP_URL milik Toko 1, bukan domain hard-coded Toko 2.
+12. Pterodactyl versi Toko 1 yang sudah memiliki timeout/error handling dipertahankan.
+13. Pengiriman email detail panel sekarang di-await supaya proses SMTP benar-benar ditunggu sebelum action selesai di lingkungan serverless.
+14. .gitignore ditambahkan agar file .env/secrets tidak ikut ter-push ke GitHub.
