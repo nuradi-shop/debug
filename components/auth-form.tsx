@@ -58,7 +58,7 @@ export function AuthForm({
       <div className="mx-auto max-w-md">
         <Link
           href="/"
-          className="mb-8 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
+          className="click-motion mb-8 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
           Kembali ke Home
@@ -143,7 +143,7 @@ export function AuthForm({
               <div className="text-right">
                 <Link
                   href="/forgot-password"
-                  className="text-xs font-bold text-cyan-300"
+                  className="click-motion inline-block text-xs font-bold text-cyan-300 hover:text-cyan-200"
                 >
                   Lupa Password?
                 </Link>
@@ -152,7 +152,7 @@ export function AuthForm({
 
             <button
               type="submit"
-              className="relative z-10 h-12 w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-300 to-sky-400 font-black text-slate-950 pointer-events-auto"
+              className="click-motion relative z-10 h-12 w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-300 to-sky-400 font-black text-slate-950 shadow-[0_10px_30px_rgba(56,189,248,.10)] hover:brightness-110 hover:shadow-[0_12px_35px_rgba(56,189,248,.22)] pointer-events-auto"
             >
               {mode === "login"
                 ? "Login"
@@ -169,7 +169,7 @@ export function AuthForm({
               <>
                 Belum punya akun?{" "}
                 <Link
-                  className="font-bold text-cyan-300"
+                  className="click-motion inline-block font-bold text-cyan-300 hover:text-cyan-200"
                   href="/register"
                 >
                   Daftar
@@ -181,7 +181,7 @@ export function AuthForm({
               <>
                 Sudah punya akun?{" "}
                 <Link
-                  className="font-bold text-cyan-300"
+                  className="click-motion inline-block font-bold text-cyan-300 hover:text-cyan-200"
                   href="/login"
                 >
                   Login
@@ -191,7 +191,7 @@ export function AuthForm({
 
             {(mode === "forgot" || mode === "reset") && (
               <Link
-                className="font-bold text-cyan-300"
+                className="click-motion inline-block font-bold text-cyan-300 hover:text-cyan-200"
                 href="/login"
               >
                 Kembali ke Login
@@ -202,7 +202,7 @@ export function AuthForm({
           {mode === "login" && (
             <Link
               href="/store"
-              className="mt-4 block text-center text-xs text-slate-500 hover:text-white"
+              className="click-motion mt-4 block text-center text-xs text-slate-500 hover:text-white"
             >
               Lanjut belanja sebagai tamu →
             </Link>
