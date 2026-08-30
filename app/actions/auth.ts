@@ -123,14 +123,17 @@ export async function forgotAction(formData: FormData) {
     await transporter.sendMail({
       from: appConfig.emailSender.from,
       to: email,
-      subject: "Reset Password BROCK STORE",
-      text: `Reset password akun BROCK STORE kamu:\n\n${resetUrl}\n\nLink ini memiliki masa berlaku terbatas.`,
+      subject: "Reset Password - BROCK STORE",
+      text: `Halo,\n\nKami menerima permintaan untuk mengganti password akun BROCK STORE.\n\nKlik link berikut untuk membuat password baru:\n\n${resetUrl}\n\nLink reset password ini berlaku selama 5 menit.\n\nJika kamu tidak meminta penggantian password, abaikan email ini.\n\nBROCK STORE`,
       html: `
-        <div style="font-family:Arial,sans-serif;line-height:1.6">
-          <h2>Reset Password BROCK STORE</h2>
-          <p>Kami menerima permintaan reset password untuk akun kamu.</p>
-          <p><a href="${resetUrl}">Reset Password</a></p>
-          <p>Jika kamu tidak meminta reset password, abaikan email ini.</p>
+        <div style="font-family:Arial,sans-serif;line-height:1.7;color:#111">
+          <p>Halo,</p>
+          <p>Kami menerima permintaan untuk mengganti password akun BROCK STORE.</p>
+          <p>Klik link berikut untuk membuat password baru:</p>
+          <p><a href="${resetUrl}">${resetUrl}</a></p>
+          <p>Link reset password ini berlaku selama <strong>5 menit</strong>.</p>
+          <p>Jika kamu tidak meminta penggantian password, abaikan email ini.</p>
+          <p style="margin-top:32px;color:#888">BROCK STORE</p>
         </div>
       `,
     })
