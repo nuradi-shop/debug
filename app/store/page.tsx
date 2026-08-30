@@ -1,5 +1,4 @@
 import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
 import Navbar from "@/components/navbar"
 import { LoadingScreen } from "@/components/loading-screen"
 import { SocialMediaButton } from "@/components/social-media-button"
@@ -18,10 +17,6 @@ export default async function StorePage({
   const cookieStore = await cookies()
   const sessionToken = cookieStore.get(SESSION_COOKIE)?.value
   const user = await getUserBySession(sessionToken)
-
-  // Kalau cookie session masih ada tetapi session di MongoDB sudah expired,
-  // arahkan ke Login, bukan tampil sebagai guest.
-  if (sessionToken && !user) redirect("/login?reason=session_expired")
 
   const params = await searchParams
 
