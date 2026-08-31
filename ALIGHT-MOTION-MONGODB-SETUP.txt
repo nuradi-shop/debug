@@ -1,0 +1,31 @@
+BROCK STORE - SETUP STOK ALIGHT MOTION
+
+1) Collection: am_stock
+Untuk AM Premium Sharing, setiap akun adalah 1 dokumen:
+{
+  "productId": "am-sharing-1y",
+  "email": "akunsharing@email.com",
+  "password": "password-akun",
+  "status": "available"
+}
+Saat pembayaran sukses, sistem otomatis mengubah status menjadi "sold", menambahkan transactionId, buyerEmail, soldAt, lalu mengirim akun ke email pembeli.
+
+2) Collection: am_products
+Untuk stok/kuota AM Private buat dokumen:
+{
+  "productId": "am-private-1y",
+  "stock": 10,
+  "active": true
+}
+Stok berkurang 1 setelah pembayaran Private sukses.
+
+Opsional override produk Sharing:
+{
+  "productId": "am-sharing-1y",
+  "active": true
+}
+Stok Sharing dihitung otomatis dari jumlah dokumen am_stock berstatus available.
+
+Harga default di source:
+- AM Premium Sharing 1 Tahun: Rp3.000
+- AM Premium Private 1 Tahun: Rp7.000
