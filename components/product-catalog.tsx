@@ -1,0 +1,9 @@
+import Link from "next/link"
+import { ArrowRight, Bot, Cloud, Crown, Film } from "lucide-react"
+const products=[
+ {icon:Bot,title:"Panel Bot",text:"Panel Pterodactyl untuk bot dan kebutuhan server digital.",href:"/store?product=panel-bot#order"},
+ {icon:Crown,title:"Admin Panel",text:"Akses administrator Pterodactyl dengan proses pembelian praktis.",href:"/store?product=admin-panel#order"},
+ {icon:Cloud,title:"Code Redfinger",text:"Redeem Code dengan stok real-time dan pengiriman otomatis.",href:"/store?product=redfinger#order"},
+ {icon:Film,title:"Alight Motion",text:"AM Premium 1 Tahun: Sharing otomatis atau Private proses manual.",href:"/store?product=alight-motion#order"},
+]
+export function ProductCatalog(){return <main className="min-h-[80vh] pt-32 pb-20"><section className="mx-auto max-w-7xl px-4 md:px-6"><div className="text-center"><div className="text-xs font-black uppercase tracking-[.25em] text-cyan-300">Katalog Brock Store</div><h1 className="mt-4 text-4xl font-black md:text-6xl">Pilih produk yang kamu butuhkan.</h1><p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-400">Semua produk Brock Store tersedia dalam satu katalog. Pilih produk untuk melihat paket, stok, dan melanjutkan checkout.</p></div><div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">{products.map(({icon:Icon,...p})=><Link key={p.title} href={p.href} className="group rounded-3xl border border-white/10 bg-white/[.025] p-6 transition hover:-translate-y-1 hover:border-cyan-300/25"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-cyan-300/10 text-cyan-300"><Icon className="h-5 w-5"/></div><h2 className="mt-5 text-xl font-black">{p.title}</h2><p className="mt-3 min-h-20 text-sm leading-6 text-slate-400">{p.text}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-cyan-300">Lihat produk <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1"/></span></Link>)}</div></section></main>}
